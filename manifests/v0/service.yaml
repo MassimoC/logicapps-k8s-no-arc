@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: logicapps-k8s-v0
+  name: logicapps-k8s-v0-svc
+  namespace: wf-v0
+spec:
+  ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: logicapps-k8s-v0
+  type: ClusterIP

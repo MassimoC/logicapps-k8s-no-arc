@@ -1,0 +1,94 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Initialize_variable": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "responseObj",
+                            "type": "object",
+                            "value": {}
+                        }
+                    ]
+                },
+                "runAfter": {}
+            },
+            "Compose": {
+                "type": "Compose",
+                "inputs": {
+                    "itemId": "@triggerBody()?['itemId']",
+                    "stock": "@rand(100,200)",
+                    "category": "shoes",
+                    "image": "tihr-30xr-a5s.jpg",
+                    "releaseDate": "2021-06-17T20:30:12.511Z",
+                    "patterns": [
+                        "polka dot",
+                        "striped",
+                        "Canadian flag"
+                    ],
+                    "aggregateRating": {
+                        "bestRating": "100",
+                        "ratingCount": "24",
+                        "ratingValue": "87"
+                    }
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "trackedProperties": {
+                    "Path": "Full",
+                    "Stock": "@outputs('Compose')?['stock']"
+                }
+            },
+            "Set_variable": {
+                "type": "SetVariable",
+                "inputs": {
+                    "name": "responseObj",
+                    "value": "@outputs('Compose')"
+                },
+                "runAfter": {
+                    "Compose": [
+                        "Succeeded"
+                    ]
+                }
+            },
+            "Response": {
+                "type": "Response",
+                "kind": "http",
+                "inputs": {
+                    "statusCode": 200,
+                    "body": "@variables('responseObj')"
+                },
+                "runAfter": {
+                    "Set_variable": [
+                        "Succeeded"
+                    ]
+                }
+            }
+        },
+        "triggers": {
+            "manual": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "itemId": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "method": "POST"
+                }
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {}
+    },
+    "kind": "Stateful"
+}

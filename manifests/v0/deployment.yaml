@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logicapps-k8s-v0
+  name: logicapps-k8s-v0
+  namespace: wf-v0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logicapps-k8s-v0
+  template:
+    metadata:
+      labels:
+        app: logicapps-k8s-v0
+    spec:
+      containers:
+      - env:
+        - name: ASPNETCORE_URLS
+          value: http://+:80
+        - name: PORT
+          value: "80"
+        - name: WEBSITE_SITE_NAME
+          value: logicapps-k8s-v0
+        - name: WEBSITE_HOSTNAME
+          value: localhost
+        - name: APPINSIGHTS_INSTRUMENTATIONKEY
+          value: 556bd798-0734-4dae-a0a0-66d4ed23dff8
+        - name: AzureWebJobsStorage
+          value: DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=wfv0;AccountKey=XRzThBpgbtxw92mGkxmBzRYwNwkyd5sey2/9IXD815/cJbeMq+mlA9AfXcMpGHkWwav/CwXQMffC+AStKONLNA==;
+        image: laptopimages.azurecr.io/la-docker:0.1.0
+        imagePullPolicy: IfNotPresent
+        name: logicapps-k8s-v0-img
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            memory: 400Mi
+      securityContext: {}
+      terminationGracePeriodSeconds: 60

@@ -1,0 +1,48 @@
+# ------- DOTNET ----------
+#FROM mcr.microsoft.com/azure-functions/dotnet:3.0.14492-appservice
+
+#ENV AzureWebJobsScriptRoot=/home/site/wwwroot
+#ENV AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+#ENV FUNCTIONS_V2_COMPATIBILITY_MODE=true
+
+#COPY ./bin/release/netcoreapp3.1/publish/ /home/site/wwwroot
+
+
+# ------- NODE ----------
+#FROM mcr.microsoft.com/azure-functions/node:3.0
+
+#ENV AzureWebJobsScriptRoot=/home/site/wwwroot 
+#ENV AzureFunctionsJobHost__Logging__Console__IsEnabled=true 
+#ENV FUNCTIONS_V2_COMPATIBILITY_MODE=true
+##ENV WEBSITE_HOSTNAME localhost
+##ENV WEBSITE_SITE_NAME la-standard
+##ENV AZURE_FUNCTIONS_ENVIRONMENT Development
+
+#COPY . /home/site/wwwroot
+#RUN cd /home/site/wwwroot
+
+# ------- DOTNET ----------
+
+#FROM mcr.microsoft.com/azure-functions/dotnet:4-appservice AS base
+#WORKDIR /app
+#EXPOSE 80
+#EXPOSE 443
+
+#FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+#WORKDIR /src
+#COPY ["src.csproj", "workflow/"]
+#RUN dotnet restore "workflow/src.csproj"
+#COPY . .
+#WORKDIR "/src/workflow"
+#RUN dotnet build "src.csproj" -c Release -o /app/build
+
+#FROM build AS publish
+#RUN dotnet publish "src.csproj" -c Release -o /app/publish
+
+#ENTRYPOINT ["dotnet", "src.dll"]
+
+#FROM base AS final
+#WORKDIR /home/site/wwwroot
+#COPY --from=publish /app/publish/ .
+#ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+#    AzureFunctionsJobHost__Logging__Console__IsEnabled=true 

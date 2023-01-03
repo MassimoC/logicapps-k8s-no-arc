@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logicapps-k8s
+  namespace: wf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logicapps-k8s
+  template:
+    metadata:
+      labels:
+        app: logicapps-k8s
+    spec:
+        // docker run -d -p 5002:80 
+        // -e "WEBSITE_HOSTNAME=localhost" 
+        // -e "WEBSITE_SITE_NAME=WarehouseService" -e "AzureWebJobsStorage=$storageCN" 
+        // -e "APPINSIGHTS_INSTRUMENTATIONKEY=afded766-1234-1234-1234-afa123474a94" 
+        // la-docker:0.0.4
+      containers:
+      - env:
+        - name: ASPNETCORE_URLS
+          value: http://+:80
+        - name: PORT
+          value: "80"
+        - name: WEBSITE_SITE_NAME
+          value: woffox1
+        - name: APP_NAME
+          value: woffox1
+        - name: WEBSITE_SLOT_NAME
+          value: production
+        - name: WEBSITE_HOSTNAME
+          value: woffox1.appsvc-on-k3d-i7bpnriofy.westeurope.k4apps.io
+        - name: ENVIRONMENT_DNS_SUFFIX
+          value: appsvc-on-k3d-i7bpnriofy.westeurope.k4apps.io
+        - name: SCM_WEBSITE_HOSTNAME
+          value: woffox1.scm.appsvc-on-k3d-i7bpnriofy.westeurope.k4apps.io
+        - name: AzureWebJobsSecretStorageType
+          value: kubernetes
+        - name: AzureWebJobsKubernetesSecretName
+          value: woffox1-keys
+        envFrom:
+        - secretRef:
+            name: woffox1-secrets
+        image: massimocrippa/la-docker:0.1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 1
+        name: http
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 48
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 80
+          timeoutSeconds: 5
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+        securityContext:
+          allowPrivilegeEscalation: false

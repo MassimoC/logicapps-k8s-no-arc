@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  host.function.default: Q1lrT0MwQUxsd0VidFFSaEMzNFIzOGpnZTBKSnJQeHZUOThUaFpDQ3psYWNVWjZTU2ZqWDB3PT0=
+  host.master: S3gxdlZiY0tNVUljb1NhUUhBZlhWMDNITDZreFdqcDYzcXp1ZjlpMng3M3Vmc29hYU9xYjlRPT0=
+  host.systemKey.workflow_extension: WTJhRWRpYUpaOUdBS1pxckpYZGZhQklkZEtXQjc5VVlYRnFjMHlEZDJEM0QxTkFHWXlvNEJ3PT0=
+kind: Secret
+metadata:
+  name: woffox1-keys
+  namespace: appsvc-system
+type: Opaque
