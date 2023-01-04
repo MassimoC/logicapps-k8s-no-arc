@@ -3,11 +3,11 @@ kind: Service
 metadata:
   labels:
     app: logicapps-k8s-v0
-  name: logicapps-k8s-v0-svc
-  namespace: wf-v0
+  name: logicapps-k8s-v0-http
+  namespace: logicapps-v0
 spec:
   ports:
-    - name: web
+    - name: wf
       port: 80
       protocol: TCP
       targetPort: 80

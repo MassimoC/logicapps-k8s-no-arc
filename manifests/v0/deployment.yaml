@@ -4,7 +4,7 @@ metadata:
   labels:
     app: logicapps-k8s-v0
   name: logicapps-k8s-v0
-  namespace: wf-v0
+  namespace: logicapps-v0
 spec:
   replicas: 1
   selector:
@@ -17,19 +17,23 @@ spec:
     spec:
       containers:
       - env:
-        - name: ASPNETCORE_URLS
-          value: http://+:80
-        - name: PORT
-          value: "80"
         - name: WEBSITE_SITE_NAME
-          value: logicapps-k8s-v0
+          value: helloworkflow
         - name: WEBSITE_HOSTNAME
           value: localhost
+        - name: AzureWebJobsStorage
+          value: DefaultEndpointsProtocol=https;AccountName=logicappstateweu;AccountKey=PFxqQ9aGldiuvLEms2wG8GgUjs7IHAD3hMo9SNIA2opmoJy+oIdjSs+J9TUstGqVN9Ce4Dq4ig50+AStG+jAOw==;EndpointSuffix=core.windows.net
         - name: APPINSIGHTS_INSTRUMENTATIONKEY
           value: 556bd798-0734-4dae-a0a0-66d4ed23dff8
-        - name: AzureWebJobsStorage
-          value: DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=wfv0;AccountKey=XRzThBpgbtxw92mGkxmBzRYwNwkyd5sey2/9IXD815/cJbeMq+mlA9AfXcMpGHkWwav/CwXQMffC+AStKONLNA==;
-        image: laptopimages.azurecr.io/la-docker:0.1.0
+        - name: AZURE_FUNCTIONS_ENVIRONMENT
+          value: Development
+        - name: AzureFunctionsJobHost__extensionBundle__version
+          value: '[1.*, 2.0.0)'
+        - name: AzureFunctionsJobHost__extensionBundle__id
+          value: Microsoft.Azure.Functions.ExtensionBundle.Workflows
+        - name: tracing__consoleLevel
+          value: verbose
+        image: massimocrippa/la-standard-dotnet:0.0.6-s1
         imagePullPolicy: IfNotPresent
         name: logicapps-k8s-v0-img
         ports:

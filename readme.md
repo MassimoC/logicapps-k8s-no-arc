@@ -56,13 +56,13 @@ curl --location --request POST $wfURL --header 'Content-Type: application/json' 
 ## V0 - docker on localhost
 
 ```
-docker build .\ --tag la-standard-dotnet:0.0.6-app -f .\Dockerfile --no-cache
+docker build .\ --tag la-standard-dotnet:0.0.6-s1 -f .\Dockerfile --no-cache
 
 # workflow not loaded
-docker run -d -p 5002:80 -e "WEBSITE_HOSTNAME=localhost" -e "WEBSITE_SITE_NAME=helloworkflow" -e "AzureWebJobsStorage=$storageCN" -e "APPINSIGHTS_INSTRUMENTATIONKEY=556bd798-0734-4dae-a0a0-66d4ed23dff8" -e "AZURE_FUNCTIONS_ENVIRONMENT=Development" -e "AzureFunctionsJobHost__extensionBundle__version=[1.*, 2.0.0)" -e "AzureFunctionsJobHost__extensionBundle__id=Microsoft.Azure.Functions.ExtensionBundle.Workflows" la-standard-dotnet:0.0.6-app
+docker run -d -p 5002:80 -e "WEBSITE_HOSTNAME=localhost" -e "WEBSITE_SITE_NAME=helloworkflow" -e "AzureWebJobsStorage=$storageCN" -e "APPINSIGHTS_INSTRUMENTATIONKEY=556bd798-0734-4dae-a0a0-66d4ed23dff8" -e "AZURE_FUNCTIONS_ENVIRONMENT=Development" -e "AzureFunctionsJobHost__extensionBundle__version=[1.*, 2.0.0)" -e "AzureFunctionsJobHost__extensionBundle__id=Microsoft.Azure.Functions.ExtensionBundle.Workflows" la-standard-dotnet:0.0.6-s1
 
 # not ok
-docker run -d -p 5002:80 -e "WEBSITE_HOSTNAME=localhost" -e "WEBSITE_SITE_NAME=helloworkflow" -e "AzureWebJobsStorage=$storageCN" -e "APPINSIGHTS_INSTRUMENTATIONKEY=556bd798-0734-4dae-a0a0-66d4ed23dff8" -e "AZURE_FUNCTIONS_ENVIRONMENT=Development" -e "AzureFunctionsJobHost__extensionBundle__version=[1.*, 2.0.0)" -e "AzureFunctionsJobHost__extensionBundle__id=Microsoft.Azure.Functions.ExtensionBundle.Workflows" -e "AzureFunctionsJobHost__extensions__workflow__settings__Runtime.WorkflowOperationDiscoveryHostMode=true" la-standard-dotnet:0.0.6-app
+docker run -d -p 5002:80 -e "WEBSITE_HOSTNAME=localhost" -e "WEBSITE_SITE_NAME=helloworkflow" -e "AzureWebJobsStorage=$storageCN" -e "APPINSIGHTS_INSTRUMENTATIONKEY=556bd798-0734-4dae-a0a0-66d4ed23dff8" -e "AZURE_FUNCTIONS_ENVIRONMENT=Development" -e "AzureFunctionsJobHost__extensionBundle__version=[1.*, 2.0.0)" -e "AzureFunctionsJobHost__extensionBundle__id=Microsoft.Azure.Functions.ExtensionBundle.Workflows" -e "AzureFunctionsJobHost__extensions__workflow__settings__Runtime.WorkflowOperationDiscoveryHostMode=true" la-standard-dotnet:0.0.6-s1
 
 
 docker ps
@@ -79,13 +79,21 @@ ls -a -l
 ## V0 - on kubernetes
 
 ```
+docker tag la-standard-dotnet:0.0.6-s1 massimocrippa/la-standard-dotnet:0.0.6-s1
+docker login -u massimocrippa -p somepassword
+docker push massimocrippa/la-standard-dotnet:0.0.6-s1
+```
+
+```
 # create namespace and shared resources
-kubectl create namespace wf-v0
+kubectl create namespace logicapps-v0
 
 # deploy all the content of the dev folder
-kubectl --namespace 'wf-v0' apply --filename manifests/v0/
+kubectl --namespace 'logicapps-v0' apply --filename manifests/v0/
 ```
 
 ```
-kubectl port-forward logicapps-k8s-v0-6f9fd4cfbf-26wbz 80:80 -n wf-v0
+kubectl port-forward logicapps-k8s-v0-6f9fd4cfbf-26wbz 80:80 -n logicapps-v0
+kubectl exec -it curl-pod -n logicapps-v0 -- bin/sh
+  
 ```

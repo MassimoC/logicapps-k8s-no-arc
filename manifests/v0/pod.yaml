@@ -1,0 +1,10 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: curl-pod
+  namespace: logicapps-v0
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:7.87.0
+      command: ["sleep", "9999999"]
