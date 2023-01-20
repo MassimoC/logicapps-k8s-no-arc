@@ -32,7 +32,7 @@ dotnet publish -c release
 func host start
 
 # get the masterkey (azure-webjobs-secrets)
-$masterKey = "vYA13Bec8Y82HJr-0SMsJBIck5O3sTF4hoRwPLBa8p6UAzFuQ-5r-A=="
+$masterKey = "w2rMY35Qpinuy5W4rzxmr21w0Pnc7B9TexWTg8X0_4G5AzFuPjNo1w=="
 
 # get the LogicApps URL
 $sdkWebhook = "http://localhost:7071/runtime/webhooks/workflow/api/management/workflows/helloworkflow/triggers/manual/listCallbackUrl?api-version=2020-05-01-preview&code=$masterKey"
@@ -93,7 +93,21 @@ kubectl --namespace 'logicapps-v0' apply --filename manifests/v0/
 ```
 
 ```
-kubectl port-forward logicapps-k8s-v0-6f9fd4cfbf-26wbz 80:80 -n logicapps-v0
+kubectl port-forward logicapps-k8s-v0-84bbf64d96-wt4l5 80:80 -n logicapps-v0
 kubectl exec -it curl-pod -n logicapps-v0 -- bin/sh
   
+# get the masterkey (azure-webjobs-secrets)
+$masterKey = "w2rMY35Qpinuy5W4rzxmr21w0Pnc7B9TexWTg8X0_4G5AzFuPjNo1w=="
+
+# get the LogicApps URL
+$sdkWebhook = "http://localhost:80/runtime/webhooks/workflow/api/management/workflows/helloworkflow/triggers/manual/listCallbackUrl?api-version=2020-05-01-preview&code=$masterKey"
+
+# get the LogicApps URL
+curl --location --request POST $sdkWebhook --header "Content-Length: 0" -v
+
+# workflow URL	(vscode)
+$wfURL="http://localhost/api/helloworkflow/triggers/manual/invoke?api-version=2022-05-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TKWJDgpW1_bRYF0FZqj--MpwcbC1gx2XH61k5tPkIiI"
+
+curl --location --request POST $wfURL --header 'Content-Type: application/json' --header 'x-format: expand'  --data-raw '{"itemId": 1000}' -v
+
 ```
